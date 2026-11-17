@@ -33,6 +33,7 @@ jobs:
           for p in src/EdiWeave.Core/EdiWeave.Core.csproj \
                    src/EdiWeave.Framework/EdiWeave.Framework.csproj \
                    src/EdiWeave.Hipaa835/EdiWeave.Hipaa835.csproj \
+                   src/EdiWeave.Healthcare/EdiWeave.Healthcare.csproj \
                    rules/Rules.Hipaa005010/Rules.Hipaa005010.csproj \
                    rules/Rules.Hipaa004010/Rules.Hipaa004010.csproj; do
             dotnet pack "$p" -c Release --no-build -p:Version=$VERSION -o artifacts

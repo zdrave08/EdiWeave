@@ -15,6 +15,7 @@ EdiWeave.Next continues [EdiWeave](https://github.com/EdiWeave/EdiWeave), which 
 | `EdiWeave.Next.Core`, `EdiWeave.Next.Framework` | .NET Standard 2.0, .NET 8, .NET 10 |
 | `EdiWeave.Next.Rules.Hipaa005010`, `EdiWeave.Next.Rules.Hipaa004010` | .NET Standard 2.0 |
 | `EdiWeave.Next.Hipaa835` | .NET Standard 2.0, .NET 8, .NET 10 |
+| `EdiWeave.Next.Healthcare` | .NET 8, .NET 10 |
 
 .NET Framework 4.5, .NET Standard 1.6 and .NET Core 1.x/2.0 targets were removed; all are out of support. .NET Standard 2.0 still covers .NET Framework 4.6.1+.
 
@@ -54,6 +55,37 @@ Notes:
 - `ServicePayment.LineItemControlNumber` is the 835 `REF*6R`, which echoes the 837 `REF*6R`. Use it to match payments to the lines you billed.
 - Segments the model does not map (for example MIA, MOA, TS3) are kept in `UnmappedSegments`.
 - Test files under `tests/EdiWeave.UnitTests.Hipaa835/Edi` are synthetic. Never commit real remittance files: they contain patient data.
+
+## Claim workflow for medical software (EdiWeave.Next.Healthcare)
+
+`EdiWeave.Next.Healthcare` covers the whole claim cycle for HIPAA 5010 professional claims. It is lightweight: it does not need the rules engine, and it works with the 835 reader.
+
+| Step | Class | What it does |
+| --- | --- | --- |
+| Build the 837P | `Claim837PBatch`, `Claim837PWriter` | Writes 005010X222A1 from plain objects: submitter, billing provider, subscribers, dependents, claims, diagnoses, service lines. Groups claims into the right HL loops. The output is checked against the rules engine in the tests. |
+| Validate before sending | `Claim837PValidator`, `Identifiers` | NPI check digit, ICD-10 and CPT/HCPCS shape, totals, diagnosis pointers, dates, addresses, duplicate control numbers. Messages never contain patient values. |
+| Check eligibility | `Eligibility270Writer`, `EligibilityReader` | Writes 270 (005010X279A1) and reads 271: active or inactive, co-payment, deductible, co-insurance, out-of-pocket, rejections with follow-up action. |
+| Read what came back | `AckReader`, `ClaimStatusReader` | TA1 (envelope), 999 (syntax, with segment and element errors) and 277CA (accepted, rejected, pending, finalized, per claim and per line). `EdiClassifier` tells you what an incoming file is. |
+| Match everything | `ClaimReconciler` | Joins your 837P claims with 277CA and 835: paid, partly paid, denied, reversed, rejected, unmatched payments, line by line, with notes when the amounts do not add up. |
+| Send and track | `IEdiTransport`, `FolderTransport`, `SubmissionLog`, `ClaimSubmitter` | Validates, writes, sends and records each file (no patient data in the log), then reads incoming files and updates the status from TA1 and 999. Implement `IEdiTransport` for SFTP, AS2 or an HTTPS API. |
+| Protect | `AuditLog`, `PhiRedactor`, `EdiFileProtector` | Tamper-evident audit log, masking of patient data for logs and tickets, AES-256-GCM file encryption. See [Wiki/HIPAA-Security-Checklist.md](Wiki/HIPAA-Security-Checklist.md) for what the library covers and what you still have to do. |
+
+```csharp
+using EdiWeave.Healthcare;
+
+var batch = new Claim837PBatch { /* submitter, receiver, billing provider */ };
+batch.Claims.Add(claim);                                          // Claim837P with diagnoses and service lines
+
+var options = new X12Options { SenderId = "MYCLINIC", ReceiverId = "CLEARINGHOUSE", InterchangeControlNumber = 17 };
+var transport = new FolderTransport("outbox", "inbox", "processed");
+var submitter = new ClaimSubmitter(transport, new SubmissionLog("log/submissions.json"), new AuditLog("log/audit.log"));
+
+var sent = await submitter.SubmitAsync(batch, options, user: "jane");      // validates, writes, sends, records
+var responses = await submitter.ProcessResponsesAsync(user: "jane");       // 999, 277CA, 835, 271
+var outcome = ClaimReconciler.Reconcile(batch.Claims, responses.Remittances, responses.ClaimStatuses);
+```
+
+The writer only produces a file when validation finds no errors, and every file needs a new interchange control number. Use `ISA15 = T` (`Production = false`) until the clearinghouse approves your test files.
 
 ## Anonymizing real files for tests (tools/EdiWeave.Anonymizer)
 

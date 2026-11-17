@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <PackageId>EdiWeave.Next.Healthcare</PackageId>
+    <Title>EdiWeave.Next.Healthcare</Title>
+    <AssemblyName>EdiWeave.Healthcare</AssemblyName>
+    <RootNamespace>EdiWeave.Healthcare</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageDescription>HIPAA 5010 claim workflow for medical software: 837P builder and validator, 999/TA1/277CA acknowledgement readers, 270/271 eligibility, 837-to-835 reconciliation, file transport with submission tracking, PHI redaction, audit log and file encryption.</PackageDescription>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EdiWeave.Hipaa835\EdiWeave.Hipaa835.csproj" />
+  </ItemGroup>
+</Project>
