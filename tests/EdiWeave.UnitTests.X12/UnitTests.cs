@@ -361,6 +361,91 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsTrue(error.ReaderErrorCode == ReaderErrorCode.InvalidControlStructure);
         }
 
+        /// <summary>
+        /// Rewrites a fixed-width ISA into its non-padded form, as some trading partners send it.
+        /// </summary>
+        private static string UnpadIsa(string edi, char element = '*')
+        {
+            var start = edi.IndexOf("ISA", StringComparison.Ordinal);
+            var fixedIsa = edi.Substring(start, 106);
+            var fields = fixedIsa.Substring(4, 102).Split(element);
+            for (var i = 0; i < 15; i++)
+                fields[i] = fields[i].Trim();
+            fields[12] = fields[12].TrimStart('0');
+            return edi.Substring(0, start) + "ISA" + element + string.Join(element.ToString(), fields) +
+                   edi.Substring(start + 106);
+        }
+
+        [TestMethod]
+        public void TestNonPaddedIsa()
+        {
+            // ARRANGE
+            const string sample = "EdiWeave.UnitTests.X12.Edi.X12_810_00204.txt";
+            var edi = UnpadIsa(CommonHelper.LoadString(sample));
+            Assert.IsTrue(edi.StartsWith("ISA*00**00**16*102096559TEST*14*PARTNERTEST*071214*1406*U*00204*810000263*1*T*>~"), edi.Substring(0, 90));
+            List<EdiItem> ediItems;
+
+            // ACT
+            using (var ediReader = new X12Reader(new MemoryStream(Encoding.UTF8.GetBytes(edi)), "EdiWeave.Rules.X12002040"))
+            {
+                ediItems = ediReader.ReadToEnd().ToList();
+            }
+
+            // ASSERT
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().FirstOrDefault()?.Exception?.Message);
+            var isa = ediItems.OfType<ISA>().Single();
+            Assert.AreEqual("102096559TEST", isa.InterchangeSenderID_6);
+            Assert.AreEqual("810000263", isa.InterchangeControlNumber_13);
+            Assert.IsNotNull(ediItems.OfType<GS>().SingleOrDefault());
+            Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
+            Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
+            Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
+        }
+
+        [TestMethod]
+        public void TestNonPaddedIsaSecondInterchange()
+        {
+            // ARRANGE
+            // Two interchanges in one file; the second ISA is not padded.
+            const string sample = "EdiWeave.UnitTests.X12.Edi.X12_810_00204.txt";
+            var single = CommonHelper.LoadString(sample);
+            var edi = single + UnpadIsa(single);
+            List<EdiItem> ediItems;
+
+            // ACT
+            using (var ediReader = new X12Reader(new MemoryStream(Encoding.UTF8.GetBytes(edi)), "EdiWeave.Rules.X12002040"))
+            {
+                ediItems = ediReader.ReadToEnd().ToList();
+            }
+
+            // ASSERT
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().FirstOrDefault()?.Exception?.Message);
+            Assert.AreEqual(2, ediItems.OfType<ISA>().Count());
+            Assert.AreEqual(2, ediItems.OfType<TS810>().Count());
+            Assert.AreEqual(2, ediItems.OfType<IEA>().Count());
+        }
+
+        [TestMethod]
+        public void TestIsaInsideDataIsNotAHeader()
+        {
+            // ARRANGE
+            // "ISA" inside element values (for example the name LISA) must not be read as an interchange header.
+            const string sample = "EdiWeave.UnitTests.X12.Edi.X12_810_00204.txt";
+            var expected = CommonHelper.LoadString(sample)
+                .Replace("NTE*GEN*If 0% VAT", "NTE*GEN*LISA*MARISA ISA*ISA If 0% VAT");
+            List<EdiItem> ediItems;
+
+            // ACT
+            using (var ediReader = new X12Reader(new MemoryStream(Encoding.UTF8.GetBytes(expected)), "EdiWeave.Rules.X12002040"))
+            {
+                ediItems = ediReader.ReadToEnd().ToList();
+            }
+
+            // ASSERT
+            Assert.AreEqual(1, ediItems.OfType<ISA>().Count());
+            Assert.AreEqual(1, ediItems.OfType<TS810>().Count());
+        }
+
         [TestMethod]
         public void TestStWithoutDataElements()
         {

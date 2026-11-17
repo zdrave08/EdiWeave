@@ -55,6 +55,10 @@ Notes:
 - Segments the model does not map (for example MIA, MOA, TS3) are kept in `UnmappedSegments`.
 - Test files under `tests/EdiWeave.UnitTests.Hipaa835/Edi` are synthetic. Never commit real remittance files: they contain patient data.
 
+## Non-padded ISA
+
+The X12 standard requires a fixed-width ISA (106 characters). Some trading partners send it with fields not padded (for example `ISA*00**00**ZZ*SENDER*ZZ*RECEIVER*...`). `X12Reader` accepts that form when the ISA starts a segment and every field has the shape the standard requires (two-character qualifiers, six-digit date, four-digit time, numeric control number, and so on). Text such as "LISA" inside data is never taken for a header.
+
 ## Building and testing
 
 ```
