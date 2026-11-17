@@ -55,6 +55,36 @@ Notes:
 - Segments the model does not map (for example MIA, MOA, TS3) are kept in `UnmappedSegments`.
 - Test files under `tests/EdiWeave.UnitTests.Hipaa835/Edi` are synthetic. Never commit real remittance files: they contain patient data.
 
+## Anonymizing real files for tests (tools/EdiWeave.Anonymizer)
+
+Real 837/835 files contain patient data and must never be committed or sent outside the clinic. The `edi-anonymize` tool makes copies that are safe to use as test fixtures.
+
+Run it **on the machine where the original files are**:
+
+```
+set EDI_ANON_KEY=<secret of at least 16 characters, kept in the clinic>        (Windows)
+export EDI_ANON_KEY=<secret of at least 16 characters, kept in the clinic>     (Linux/macOS)
+dotnet run --project tools/EdiWeave.Anonymizer -c Release -- <input file or folder> <output folder>
+```
+
+What it does:
+
+| Data | Treatment |
+| --- | --- |
+| Patient and subscriber names, member IDs (NM1*IL/QC/74/QD) | Format-preserving pseudonym: letters stay letters, digits stay digits, dashes kept |
+| Patient control and payer claim numbers (CLM01, CLP01, CLP07), REF*D9/6R/SY/1W/IG/… | Format-preserving pseudonym |
+| Group number (SBR03), group name (SBR04) | Pseudonym / "SYNTHETIC GROUP" |
+| Patient street address (N3), postal code (N4) | Replaced; city, state and country kept |
+| Date of birth (DMG) | Year only (YYYY0101) |
+| Service and other dates (DTP, DTM) | Shifted by the same number of days for every file (intervals kept) |
+| Free text (NTE, K3, MSG) | "REDACTED" |
+| Codes, amounts, providers, payers, ISA/GS | Kept |
+
+- Pseudonyms are deterministic for a given key: the same claim number gets the same pseudonym in the 837 and the matching 835. Use the same key for every batch.
+- After replacing, the tool searches each output for the original values. If any remain (for example in a segment it does not know), **the file is not written** and the tool exits with code 2. Only segment IDs are printed, never values.
+- Output files are named by transaction type and payer (`837_<payer>_001.x12`). Original file names, which often contain patient names, are never printed or reused.
+- Diagnosis codes are kept. In a small population a rare diagnosis with sex and year of birth can still identify someone: review the output before it leaves the clinic.
+
 ## Non-padded ISA
 
 The X12 standard requires a fixed-width ISA (106 characters). Some trading partners send it with fields not padded (for example `ISA*00**00**ZZ*SENDER*ZZ*RECEIVER*...`). `X12Reader` accepts that form when the ISA starts a segment and every field has the shape the standard requires (two-character qualifiers, six-digit date, four-digit time, numeric control number, and so on). Text such as "LISA" inside data is never taken for a header.
