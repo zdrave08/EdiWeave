@@ -313,6 +313,30 @@ namespace EdiWeave.UnitTests.Edifact
         }
 
         [TestMethod]
+        public void TestEscapedEscapeBeforeSegmentTerminator()
+        {
+            // ARRANGE: "??'" is an escaped escape character followed by a real segment terminator
+            const string sample = "EdiWeave.UnitTests.Edifact.Edi.Edifact_INVOIC_D00A_EscapedEscapeBeforeTerminator.txt";
+            var ediStream = CommonHelper.LoadStream(sample);
+            List<EdiItem> ediItems;
+
+            // ACT
+            using (var ediReader = new EdifactReader(ediStream, "EdiWeave.Rules.EdifactD00A"))
+            {
+                ediItems = ediReader.ReadToEnd().ToList();
+            }
+            var actual = EdifactHelper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
+
+            // ASSERT
+            Assert.IsNotNull(ediItems.OfType<TSINVOIC>().SingleOrDefault());
+            Assert.IsNotNull(ediItems.OfType<UNZ>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
+            // The FTX segment ends at the terminator, so the following NAD segment is read as its own segment.
+            StringAssert.Contains(actual, "FTX+AAI+++Free text ends with escape??");
+            Assert.AreEqual(3, System.Text.RegularExpressions.Regex.Matches(actual, @"^NAD\+", System.Text.RegularExpressions.RegexOptions.Multiline).Count);
+        }
+
+        [TestMethod]
         public void TestRepeatingSegment()
         {
             // ARRANGE
