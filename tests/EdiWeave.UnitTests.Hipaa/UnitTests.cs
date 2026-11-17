@@ -29,7 +29,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -52,13 +52,42 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
             Assert.IsNotNull(ediItems.OfType<ISA>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GS>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Test5010NonPaddedIsa()
+        {
+            // ARRANGE
+            // Same 837P, but the ISA fields are not padded to fixed width and '+' is the repetition separator.
+            const string sample = "EdiWeave.UnitTests.Hipaa.Edi.Hipaa_837P_00501.txt";
+            var padded = CommonHelper.LoadString(sample);
+            const string fixedIsa = "ISA*00*          *00*          *ZZ*010101010      *33*7306849549     *110406*0857*^*00501*000000312*1*P*>~";
+            Assert.IsTrue(padded.StartsWith(fixedIsa));
+            var edi = "ISA*00**00**ZZ*010101010*33*7306849549*110406*0857*+*00501*312*1*P*>~" +
+                      padded.Substring(fixedIsa.Length);
+            List<EdiItem> ediItems;
+
+            // ACT
+            using (var ediReader = new X12Reader(new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(edi)), HipaaFactory))
+            {
+                ediItems = ediReader.ReadToEnd().ToList();
+            }
+
+            // ASSERT
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().FirstOrDefault()?.Exception?.Message);
+            var isa = ediItems.OfType<ISA>().Single();
+            Assert.AreEqual("010101010", isa.InterchangeSenderID_6);
+            Assert.AreEqual("312", isa.InterchangeControlNumber_13);
+            Assert.IsNotNull(ediItems.OfType<GS>().SingleOrDefault());
+            Assert.IsNotNull(ediItems.OfType<TS837>().SingleOrDefault());
+            Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
         }
 
         [TestMethod]
@@ -75,7 +104,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -98,7 +127,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);

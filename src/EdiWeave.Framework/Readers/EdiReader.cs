@@ -27,7 +27,24 @@ namespace EdiWeave.Framework.Readers
     public abstract class EdiReader : BaseReader
     {
         internal readonly Func<MessageContext, Assembly> RulesAssembly;
-        
+
+        /// <summary>
+        /// True while <see cref="TryReadHeader"/> is probing text that starts a new segment
+        /// (only whitespace precedes it), as opposed to text found inside a segment's data.
+        /// </summary>
+        protected bool ProbeAtSegmentStart { get; private set; }
+
+        private static bool IsBlank(string value, int length)
+        {
+            for (var i = 0; i < length; i++)
+            {
+                if (!char.IsWhiteSpace(value[i]) && value[i] != '\0' && value[i] != '﻿')
+                    return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EdiReader"/> class.
         /// </summary>
@@ -135,6 +152,7 @@ namespace EdiWeave.Framework.Readers
                     var last3 = line.Substring(line.Length - 3);
                     Separators separators;
                     string probed;
+                    ProbeAtSegmentStart = IsBlank(line, line.Length - 3);
                     if (TryReadHeader(last3, out probed, out separators))
                     {
                         Separators = separators;

@@ -25,16 +25,16 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = VdaHelper.Generate(ediItems, Environment.NewLine);
+            var actual = VdaHelper.Generate(ediItems, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
             Assert.IsNotNull(ediItems.OfType<TS4905>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -48,16 +48,16 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = VdaHelper.Generate(ediItems, Environment.NewLine);
+            var actual = VdaHelper.Generate(ediItems, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
             Assert.IsTrue(ediItems.OfType<TS4905>().Count() == 2);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -70,7 +70,7 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
@@ -80,7 +80,7 @@ namespace EdiWeave.UnitTests.Vda
             Assert.IsTrue(ediItems.OfType<TS4905>().Count() == 2);
             Assert.IsNotNull(ediItems.OfType<TS4905>().FirstOrDefault());
             Assert.IsTrue(ediItems.OfType<TS4905>().First().HasErrors);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
         }
 
         [TestMethod]
@@ -92,7 +92,7 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
@@ -112,7 +112,7 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
@@ -135,16 +135,16 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = VdaHelper.Generate(ediItems, Environment.NewLine);
+            var actual = VdaHelper.Generate(ediItems, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
             Assert.IsTrue(ediItems.OfType<TS4905>().Count() == 1);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -167,7 +167,7 @@ namespace EdiWeave.UnitTests.Vda
             // ASSERT
             Assert.IsNotNull(ediItems);
             Assert.IsTrue(ediItems.OfType<TS4905>().Count() == 1);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -181,16 +181,16 @@ namespace EdiWeave.UnitTests.Vda
             List<EdiItem> ediItems;
 
             // ACT
-            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, Environment.NewLine))
+            using (var ediReader = new VdaReader(ediStream, MessageContextFactory, Encoding.UTF8, CommonHelper.WindowsNewLine))
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = VdaHelper.Generate(ediItems, Environment.NewLine) + "trailer";
+            var actual = VdaHelper.Generate(ediItems, CommonHelper.WindowsNewLine) + "trailer";
 
             // ASSERT
             Assert.IsNotNull(ediItems);
             Assert.IsTrue(ediItems.OfType<TS4905>().Count() == 1);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -212,7 +212,7 @@ namespace EdiWeave.UnitTests.Vda
             Assert.IsNotNull(ediItems);
             Assert.IsNotNull(ediItems.OfType<TS4905>().SingleOrDefault());
             Assert.IsTrue(ediItems.OfType<TS4905>().Single().HasErrors);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
         }
 
         private MessageContext MessageContextFactory(string segment)
