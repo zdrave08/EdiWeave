@@ -27,7 +27,7 @@ namespace EdiWeave.UnitTests.Eancom
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = EdifactHelper.Generate(ediItems, null, Environment.NewLine);
+            var actual = EdifactHelper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -36,7 +36,7 @@ namespace EdiWeave.UnitTests.Eancom
             Assert.IsNotNull(ediItems.OfType<TSINVOIC>().SingleOrDefault());
             Assert.IsNull(ediItems.OfType<UNE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<UNZ>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
     }

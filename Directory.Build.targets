@@ -1,0 +1,7 @@
+<Project>
+  <!-- Evaluated after each project, so IsPackable set in the project is respected. -->
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\nuget-logo.png" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+</Project>

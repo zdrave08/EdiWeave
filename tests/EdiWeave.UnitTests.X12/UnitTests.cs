@@ -35,7 +35,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -44,7 +44,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -64,7 +64,7 @@ namespace EdiWeave.UnitTests.X12
                 ediItems = ediReader.ReadToEnd().ToList();
                 separators = ediReader.Separators;
             }
-            var actual = X12Helper.Generate(ediItems, separators, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, separators, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -73,7 +73,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<EdiWeave.Rules.X12_002040.Rep.TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
             
         }
@@ -94,7 +94,7 @@ namespace EdiWeave.UnitTests.X12
                 ediItems = ediReader.ReadToEnd().ToList();
                 separators = ediReader.Separators;
             }
-            var actual = X12Helper.Generate(ediItems, separators, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, separators, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.AreEqual(expected, actual);
@@ -125,7 +125,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -154,7 +154,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -178,7 +178,7 @@ namespace EdiWeave.UnitTests.X12
             var error = ediItems.OfType<TS810>().SingleOrDefault();
             Assert.IsNotNull(error);
             Assert.IsTrue(error.HasErrors);
-            Assert.IsNotNull(error.ErrorContext.Errors.Any(e => e.Codes.Contains(SegmentErrorCode.UnrecognizedSegment)));
+            Assert.IsTrue(error.ErrorContext.Errors.Any(e => e.Codes.Contains(SegmentErrorCode.UnrecognizedSegment)));
             Assert.IsNotNull(error.ErrorContext);
             Assert.IsTrue(error.ErrorContext.Errors.All(e => e.SpecType == null));
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
@@ -199,7 +199,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsTrue(ediItems.OfType<TS810>().Count() == 2);
@@ -207,7 +207,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsTrue(ediItems.OfType<GS>().Count() == 2);
             Assert.IsTrue(ediItems.OfType<GE>().Count() == 2);
             Assert.IsTrue(ediItems.OfType<IEA>().Count() == 1);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -225,7 +225,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsTrue(ediItems.OfType<TS810>().Count() == 2);
@@ -233,7 +233,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsTrue(ediItems.OfType<GS>().Count() == 1);
             Assert.IsTrue(ediItems.OfType<GE>().Count() == 1);
             Assert.IsTrue(ediItems.OfType<IEA>().Count() == 1);
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -251,7 +251,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.AreEqual(expected, actual);
@@ -272,7 +272,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -281,7 +281,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -302,14 +302,14 @@ namespace EdiWeave.UnitTests.X12
                 {
                     if (ediReader.Item is ISA && ediItems.Any())
                     {
-                        actual = actual + X12Helper.Generate(ediItems, null, Environment.NewLine);
+                        actual = actual + X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
                         ediItems.Clear();
                     }
 
                     ediItems.Add(ediReader.Item);
                 }
 
-                actual = actual + X12Helper.Generate(ediItems, ediReader.Separators, Environment.NewLine);
+                actual = actual + X12Helper.Generate(ediItems, ediReader.Separators, CommonHelper.WindowsNewLine);
             }
 
             // ASSERT
@@ -338,7 +338,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
             var error = ediItems.OfType<ReaderErrorContext>().SingleOrDefault();
             Assert.IsNotNull(error);
-            Assert.IsNotNull(error.ReaderErrorCode == ReaderErrorCode.ImproperEndOfFile);
+            Assert.IsTrue(error.ReaderErrorCode == ReaderErrorCode.ImproperEndOfFile);
         }
 
         [TestMethod]
@@ -358,7 +358,30 @@ namespace EdiWeave.UnitTests.X12
             // ASSERT
             var error = ediItems.OfType<ReaderErrorContext>().SingleOrDefault();
             Assert.IsNotNull(error);
-            Assert.IsNotNull(error.ReaderErrorCode == ReaderErrorCode.InvalidControlStructure);
+            Assert.IsTrue(error.ReaderErrorCode == ReaderErrorCode.InvalidControlStructure);
+        }
+
+        [TestMethod]
+        public void TestStWithoutDataElements()
+        {
+            // ARRANGE
+            // A valid interchange whose ST segment has lost its data elements.
+            const string sample = "EdiWeave.UnitTests.X12.Edi.X12_810_00204.txt";
+            var edi = CommonHelper.LoadString(sample).Replace("ST*810*166061414~", "ST~");
+            var ediStream = new MemoryStream(Encoding.UTF8.GetBytes(edi));
+            List<EdiItem> ediItems;
+
+            // ACT
+            using (var ediReader = new X12Reader(ediStream, "EdiWeave.Rules.X12002040"))
+            {
+                ediItems = ediReader.ReadToEnd().ToList();
+            }
+
+            // ASSERT
+            var error = ediItems.OfType<ReaderErrorContext>().FirstOrDefault();
+            Assert.IsNotNull(error);
+            Assert.IsNotNull(error.Exception);
+            Assert.IsTrue(error.Exception.Message.StartsWith("ST is invalid"), error.Exception.Message);
         }
 
         [TestMethod]
@@ -448,7 +471,7 @@ namespace EdiWeave.UnitTests.X12
                     Assert.IsNotNull(ediItems.OfType<GS>().SingleOrDefault());
                     Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
                     Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
-                    Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+                    Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
                     ediItems.Clear();
                 }
             }
@@ -476,7 +499,7 @@ namespace EdiWeave.UnitTests.X12
                     Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
                     Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
                     Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-                    Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+                    Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
                     ediItems.Clear();
                 }
             }
@@ -502,7 +525,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
         }
 
         [TestMethod]
@@ -525,7 +548,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
         }
 
         [TestMethod]
@@ -551,7 +574,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
             var error = ediItems.OfType<TS810>().SingleOrDefault(m => m.HasErrors);
             Assert.IsNotNull(error);
-            Assert.IsNotNull(error.ErrorContext.Errors.Any(e => e.Codes.Contains(SegmentErrorCode.UnrecognizedSegment)));
+            Assert.IsTrue(error.ErrorContext.Errors.Any(e => e.Codes.Contains(SegmentErrorCode.UnrecognizedSegment)));
         }
 
         [TestMethod]
@@ -574,7 +597,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
         }
 
         [TestMethod]
@@ -591,7 +614,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -600,7 +623,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -621,7 +644,7 @@ namespace EdiWeave.UnitTests.X12
                 ediItems = ediReader.ReadToEnd().ToList();
                 separators = ediReader.Separators;
             }
-            var actual = X12Helper.Generate(ediItems, separators, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, separators, CommonHelper.WindowsNewLine);
 
 
             // ASSERT
@@ -631,7 +654,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -743,7 +766,7 @@ namespace EdiWeave.UnitTests.X12
                 ediItems = ediReader.ReadToEnd().ToList();
                 separators = ediReader.Separators;
             }
-            var actual = X12Helper.Generate(ediItems, separators, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, separators, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -753,7 +776,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -771,7 +794,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -780,7 +803,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -803,7 +826,7 @@ namespace EdiWeave.UnitTests.X12
             // ACT
             using (var stream = new MemoryStream())
             {
-                var writer = new X12Writer(stream, Encoding.UTF8, Environment.NewLine, true);
+                var writer = new X12Writer(stream, Encoding.UTF8, CommonHelper.WindowsNewLine, true);
 
                 writer.Write(X12Helper.CreateIsa());
                 writer.Write(X12Helper.CreateGs());
@@ -828,7 +851,7 @@ namespace EdiWeave.UnitTests.X12
             // ACT
             using (var stream = new MemoryStream())
             {
-                var writer = new X12Writer(stream, Encoding.UTF8, Environment.NewLine);
+                var writer = new X12Writer(stream, Encoding.UTF8, CommonHelper.WindowsNewLine);
 
                 writer.Write(X12Helper.CreateIsa());
                 writer.Write(X12Helper.CreateGs());
@@ -857,7 +880,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -866,7 +889,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810Eval>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -884,7 +907,7 @@ namespace EdiWeave.UnitTests.X12
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -893,7 +916,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810NoValidation>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -922,7 +945,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -951,7 +974,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 
@@ -980,7 +1003,7 @@ namespace EdiWeave.UnitTests.X12
             Assert.IsNotNull(ediItems.OfType<TS810>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<GE>().SingleOrDefault());
             Assert.IsNotNull(ediItems.OfType<IEA>().SingleOrDefault());
-            Assert.IsNull(ediItems.OfType<ErrorContext>().SingleOrDefault());
+            Assert.IsNull(ediItems.OfType<ReaderErrorContext>().SingleOrDefault());
             Assert.AreEqual(expected, actual);
         }
 

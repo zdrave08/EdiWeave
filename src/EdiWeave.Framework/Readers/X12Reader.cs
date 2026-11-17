@@ -194,13 +194,16 @@ namespace EdiWeave.Framework.Readers
                 throw new Exception("ST was not found.");
 
             var ediCompositeDataElementsSt = st.Value.GetDataElements(Separators);
+            // Validate the element count before indexing, so a malformed ST reports a clear error
+            // instead of an IndexOutOfRangeException.
+            if (ediCompositeDataElementsSt.Length < 2)
+                throw new Exception("ST is invalid. Too little data elements.");
+
             var tag = ediCompositeDataElementsSt[0];
-            if (ediCompositeDataElementsSt.Count() == 3)
+            if (ediCompositeDataElementsSt.Length == 3)
             {
                 version = ediCompositeDataElementsSt[2];
             }
-            if (ediCompositeDataElementsSt.Count() < 2)
-                throw new Exception("ST is invalid.Too little data elements.");
 
             var controlNumber = ediCompositeDataElementsSt[1];
 

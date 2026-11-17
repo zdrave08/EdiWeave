@@ -29,7 +29,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -52,7 +52,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -75,7 +75,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);
@@ -98,7 +98,7 @@ namespace EdiWeave.UnitTests.Hipaa
             {
                 ediItems = ediReader.ReadToEnd().ToList();
             }
-            var actual = X12Helper.Generate(ediItems, null, Environment.NewLine);
+            var actual = X12Helper.Generate(ediItems, null, CommonHelper.WindowsNewLine);
 
             // ASSERT
             Assert.IsNotNull(ediItems);

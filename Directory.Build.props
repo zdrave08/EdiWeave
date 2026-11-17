@@ -1,0 +1,19 @@
+<Project>
+  <!-- Shared settings for every project in EdiWeave.Next. -->
+  <PropertyGroup>
+    <Version>9.0.0</Version>
+    <Authors>Silvenga;gamingrobot;EdiWeave.Next contributors</Authors>
+    <Copyright>Copyright EdiFabric (original), EdiWeave and EdiWeave.Next contributors</Copyright>
+    <Description>
+      An open-source EDI framework for .NET: parse and create X12, HIPAA, EDIFACT, EANCOM and VDA documents.
+      EdiWeave.Next is a maintained fork of EdiWeave (itself a hard-fork of the last open-source EdiFabric) targeting modern .NET.
+    </Description>
+    <PackageProjectUrl>https://github.com/zdrave08/EdiWeave</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zdrave08/EdiWeave</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>nuget-logo.png</PackageIcon>
+    <PackageTags>EDI X12 HIPAA 837 EDIFACT EANCOM VDA</PackageTags>
+  </PropertyGroup>
+
+</Project>

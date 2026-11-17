@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, net10-modernization ]
+    tags: [ 'v*' ]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore EdiWeave.sln
+
+      - name: Build
+        run: dotnet build EdiWeave.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test EdiWeave.sln -c Release --no-build --logger "trx" --results-directory TestResults
+
+      - name: Pack
+        run: |
+          dotnet pack src/EdiWeave.Core/EdiWeave.Core.csproj -c Release --no-build -o artifacts
+          dotnet pack src/EdiWeave.Framework/EdiWeave.Framework.csproj -c Release --no-build -o artifacts
+          dotnet pack rules/Rules.Hipaa005010/Rules.Hipaa005010.csproj -c Release --no-build -o artifacts
+          dotnet pack rules/Rules.Hipaa004010/Rules.Hipaa004010.csproj -c Release --no-build -o artifacts
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-output
+          path: |
+            artifacts/*.nupkg
+            TestResults/*.trx

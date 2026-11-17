@@ -1,24 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PackageId>EdiWeave.Core</PackageId>
-    <Version>1.2.0</Version>
-    <Title>EdiWeave.Core</Title>
-    <Authors>Silvenga;gamingrobot</Authors>
-    <Description>
-      An open-source, mutli-platform EDI framework for .NET - parse and create X12, HIPAA, EDIFACT, EANCOM, VDA and PNRGOV documents with ease.
-      
-      EdiWeave is a separate hard-fork of the now closed-source library EdiFabric.
-    </Description>
-    <Copyright>Copyright 2018</Copyright>
-    <PackageLicenseUrl>https://github.com/Silvenga/EdiWeave/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/Silvenga/EdiWeave/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Silvenga/EdiWeave/</RepositoryUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Silvenga/EdiWeave/master/Assets/nuget-logo.png</PackageIconUrl>
-    <PackageTags>.NET-EDI-Framework EDIFACT X12 HIPAA EANCOM</PackageTags>
-    <TargetFrameworks>net45;netstandard1.6;netstandard2.0;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
+    <PackageId>EdiWeave.Next.Core</PackageId>
+    <Title>EdiWeave.Next.Core</Title>
+    <!-- Assembly name and namespaces stay "EdiWeave.Core" so existing code and rules assemblies keep working. -->
+    <AssemblyName>EdiWeave.Core</AssemblyName>
+    <RootNamespace>EdiWeave.Core</RootNamespace>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' Or '$(TargetFramework)' == 'netcoreapp1.1'">
-    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
-  </ItemGroup>
 </Project>

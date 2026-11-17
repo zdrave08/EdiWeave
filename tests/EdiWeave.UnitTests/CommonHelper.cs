@@ -10,6 +10,12 @@ namespace EdiWeave.UnitTests
 {
     public class CommonHelper
     {
+        /// <summary>
+        /// Sample files are stored with CRLF line endings (see .gitattributes: -text),
+        /// so tests must not use Environment.NewLine, which is "\n" on Linux and macOS.
+        /// </summary>
+        public const string WindowsNewLine = "\r\n";
+
         public static Stream LoadStream(string qualifiedFileName, bool noType = true)
         {
             var parts = qualifiedFileName.Split('.');
