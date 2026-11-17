@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
+    <PackageId>EdiWeave.Next.Hipaa835</PackageId>
+    <Title>EdiWeave.Next.Hipaa835</Title>
+    <AssemblyName>EdiWeave.Hipaa835</AssemblyName>
+    <RootNamespace>EdiWeave.Hipaa835</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageDescription>Reader for HIPAA 5010 835 (005010X221A1) health care claim payment/advice files: payment, claims, service lines, adjustments, provider-level adjustments and balancing checks.</PackageDescription>
+  </PropertyGroup>
+</Project>

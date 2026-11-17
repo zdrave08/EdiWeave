@@ -31,6 +31,7 @@ jobs:
         run: |
           dotnet pack src/EdiWeave.Core/EdiWeave.Core.csproj -c Release --no-build -o artifacts
           dotnet pack src/EdiWeave.Framework/EdiWeave.Framework.csproj -c Release --no-build -o artifacts
+          dotnet pack src/EdiWeave.Hipaa835/EdiWeave.Hipaa835.csproj -c Release --no-build -o artifacts
           dotnet pack rules/Rules.Hipaa005010/Rules.Hipaa005010.csproj -c Release --no-build -o artifacts
           dotnet pack rules/Rules.Hipaa004010/Rules.Hipaa004010.csproj -c Release --no-build -o artifacts
 
