@@ -133,6 +133,14 @@ namespace EdiWeave.Framework.Readers
             throw new NotImplementedException();
         }
 
+        private static bool IsEscapedTerminator(string line, char escape)
+        {
+            var count = 0;
+            for (var i = line.Length - 2; i >= 0 && line[i] == escape; i--)
+                count++;
+            return count % 2 == 1;
+        }
+
         /// <summary>
         /// Reads from the stream until a non-escaped segment terminator was reached.
         /// Breaks if no segment terminator was encountered after 5000 symbols were read. 
@@ -184,9 +192,9 @@ namespace EdiWeave.Framework.Readers
                 if (!line.EndsWith(Separators.Segment.ToString(), StringComparison.Ordinal)) 
                     continue;
 
-                if (Separators.Escape.HasValue &&
-                    line.EndsWith(string.Concat(Separators.Escape.Value, Separators.Segment),
-                        StringComparison.Ordinal))
+                // The terminator is escaped only when it is preceded by an odd number of escape characters:
+                // "?'" is escaped, "??'" is an escaped escape followed by a real terminator, "???'" is escaped again.
+                if (Separators.Escape.HasValue && IsEscapedTerminator(line, Separators.Escape.Value))
                     continue;
 
                 var index = line.LastIndexOf(Separators.Segment.ToString(), StringComparison.Ordinal);
