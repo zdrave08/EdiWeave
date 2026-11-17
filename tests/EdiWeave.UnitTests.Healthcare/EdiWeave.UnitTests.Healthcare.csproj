@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.6.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EdiWeave.Healthcare\EdiWeave.Healthcare.csproj" />
+    <!-- The rules engine is used to prove that the 837P this library writes is structurally valid. -->
+    <ProjectReference Include="..\..\src\EdiWeave.Core\EdiWeave.Core.csproj" />
+    <ProjectReference Include="..\..\src\EdiWeave.Framework\EdiWeave.Framework.csproj" />
+    <ProjectReference Include="..\..\rules\Rules.Hipaa005010\Rules.Hipaa005010.csproj" />
+  </ItemGroup>
+</Project>
