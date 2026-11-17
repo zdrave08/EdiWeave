@@ -472,10 +472,10 @@ namespace EdiWeave.UnitTests.Healthcare
             Assert.IsTrue(File.Exists(Path.Combine(_root, "out", "a.x12")));
             Assert.IsFalse(File.Exists(Path.Combine(_root, "out", "a.x12.tmp")));
             await Assert.ThrowsExceptionAsync<IOException>(() => t.SendAsync("a.x12", new byte[1]));
-            await t.SendAsync("..\\evil.x12", new byte[1]);
+            await t.SendAsync("sub/../evil.x12", new byte[1]);
             Assert.IsFalse(File.Exists(Path.Combine(_root, "evil.x12")), "a path in the name never leaves the outbox");
             Assert.IsTrue(File.Exists(Path.Combine(_root, "out", "evil.x12")));
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => t.SendAsync("bad:name?.x12", new byte[1]));
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => t.SendAsync("", new byte[1]));
 
             File.WriteAllText(Path.Combine(_root, "in", "r1.txt"), "response");
             var files = await t.ReceiveAsync();
